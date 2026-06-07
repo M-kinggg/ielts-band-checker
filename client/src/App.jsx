@@ -45,6 +45,13 @@ export default function App() {
   const [fileName, setFileName] = useState(null);
   const [fileType, setFileType] = useState('typed');
   const [hasSaved, setHasSaved] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(() => {
+    try {
+      return localStorage.getItem('ielts_has_submitted') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
 
   // GSAP animation container refs
   const inputPanelRef = useRef(null);
@@ -198,6 +205,13 @@ export default function App() {
 
       setReport(data);
       saveToHistory(data);
+
+      try {
+        localStorage.setItem('ielts_has_submitted', 'true');
+        setHasSubmitted(true);
+      } catch (e) {
+        console.warn("Failed to write to localStorage", e);
+      }
 
       // Save submission directly if logged in
       if (user) {
@@ -619,6 +633,15 @@ Tennis participation began at 25% and experienced a sudden drop to 20% in 2010, 
                     <Sparkles className="h-4.5 w-4.5 animate-pulse" />
                     <span>Analyze Essay & Check Band</span>
                   </button>
+
+                  {!hasSubmitted && (
+                    <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[#CA8A04]/10 border border-[#CA8A04]/20 text-[#CA8A04] text-xs">
+                      <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5 animate-pulse" />
+                      <span className="leading-relaxed font-light text-left">
+                        First analysis may take up to 60 seconds to load — our server wakes up on first request.
+                      </span>
+                    </div>
+                  )}
 
                 </form>
               </div>
