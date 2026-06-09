@@ -320,8 +320,18 @@ Tennis participation began at 25% and experienced a sudden drop to 20% in 2010, 
       {/* 3D background */}
       <ThreeBackground />
 
+      {/* Dark overlay for text readability */}
+      <div style={{
+        position: 'fixed',
+        top: 0, left: 0,
+        width: '100%', height: '100%',
+        background: 'rgba(12,10,9,0.55)',
+        zIndex: 1,
+        pointerEvents: 'none'
+      }} />
+
       {/* Main Container */}
-      <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-8 z-10">
+      <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-8" style={{ zIndex: 2, position: 'relative' }}>
         
         {/* Navigation Navbar */}
         <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#1C1917]/75 border-b border-[#44403C]/50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 shadow-lg transition-all duration-300">
