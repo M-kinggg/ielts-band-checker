@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { 
-  PenTool, 
-  History, 
+  History,
   Trash2, 
   ArrowLeft, 
   Sparkles, 
@@ -12,11 +10,10 @@ import {
   Award, 
   ChevronRight,
   BookOpen,
-  HelpCircle,
-  LogOut,
-  User
+  HelpCircle
 } from 'lucide-react';
 import ThreeBackground from './components/ThreeBackground';
+import Navbar from './components/Navbar';
 import FileUploader from './components/FileUploader';
 import ScoreDashboard from './components/ScoreDashboard';
 import FeedbackAccordion from './components/FeedbackAccordion';
@@ -26,7 +23,7 @@ import { supabase } from './lib/supabase';
 
 export default function App() {
   // Auth Integration
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Application States
@@ -266,11 +263,6 @@ export default function App() {
     }, 50);
   };
 
-  const handleSignOutClick = async () => {
-    await signOut();
-    handleReset();
-  };
-
   const loadSampleEssay = () => {
     setFileName(null);
     setFileType('typed');
@@ -308,13 +300,6 @@ Tennis participation began at 25% and experienced a sudden drop to 20% in 2010, 
     downloadAnchorNode.remove();
   };
 
-  // Truncate user email helper
-  const formatUserEmail = (email) => {
-    if (!email) return '';
-    const name = email.split('@')[0];
-    return name.length > 12 ? `${name.slice(0, 10)}...` : name;
-  };
-
   return (
     <div className="min-h-screen relative flex flex-col font-sans select-none text-slate-100">
       {/* 3D background */}
@@ -331,61 +316,14 @@ Tennis participation began at 25% and experienced a sudden drop to 20% in 2010, 
       }} />
 
       {/* Main Container */}
-      <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-8" style={{ zIndex: 2, position: 'relative' }}>
-        
-        {/* Navigation Navbar */}
-        <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#1C1917]/75 border-b border-[#44403C]/50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 shadow-lg transition-all duration-300">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#CA8A04]/10 border border-[#CA8A04]/30 rounded-xl shadow-lg shadow-yellow-600/10 text-[#CA8A04]">
-              <PenTool className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-[#FAFAF9] via-[#FAFAF9] to-[#CA8A04] bg-clip-text text-transparent tracking-tight leading-tight m-0">
-                IELTS Writing Grader
-              </h1>
-              <p className="text-xs text-[#CA8A04]/80 font-medium tracking-wide">Automated AI Band Scoring & Detailed Feedback</p>
-            </div>
-          </div>
+      <div className="flex flex-col min-h-screen" style={{ position: 'relative', zIndex: 2 }}>
+        {/* Shared Navigation */}
+        <Navbar
+          onSignInClick={() => setIsAuthModalOpen(true)}
+          onSignOut={handleReset}
+        />
 
-          <div className="flex items-center gap-3">
-            <span className="hidden md:inline-block text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 bg-[#44403C]/30 border border-[#44403C]/50 rounded-full text-slate-300">
-              Model: Gemini 1.5 Flash
-            </span>
-
-            <Link
-              to="/history"
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/5 hover:bg-[#CA8A04]/10 border border-[#44403C] rounded-xl text-xs font-bold text-slate-300 hover:text-[#CA8A04] transition-all duration-300 cursor-pointer"
-            >
-              <History className="h-3.5 w-3.5 text-[#CA8A04]" />
-              <span>History</span>
-            </Link>
-
-            {/* Auth Buttons */}
-            {user ? (
-              <div className="flex items-center gap-2 bg-[#44403C]/20 border border-[#44403C]/50 rounded-xl p-1">
-                <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-300 font-medium">
-                  <User className="h-3.5 w-3.5 text-[#CA8A04]" />
-                  <span>Hi, {formatUserEmail(user.email)}</span>
-                </div>
-                <button
-                  onClick={handleSignOutClick}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-[#44403C]/50 hover:bg-[#CA8A04]/20 border border-transparent hover:border-[#CA8A04]/30 rounded-lg text-xs font-semibold text-slate-300 hover:text-[#CA8A04] transition-all duration-300 cursor-pointer"
-                  title="Sign Out"
-                >
-                  <LogOut className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Sign Out</span>
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="px-4.5 py-2.5 bg-[#CA8A04] hover:bg-[#CA8A04]/90 text-[#0C0A09] rounded-xl text-xs font-bold transition-all duration-300 shadow-md shadow-yellow-600/10 hover:shadow-[#CA8A04]/35 hover:-translate-y-0.5 cursor-pointer"
-              >
-                Sign In
-              </button>
-            )}
-          </div>
-        </header>
+        <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-8 mt-0">
 
         {/* Layout Splitting */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -727,7 +665,8 @@ Tennis participation began at 25% and experienced a sudden drop to 20% in 2010, 
           <p>© {new Date().getFullYear()} IELTS Writing Assistant. Evaluation metrics match the official public IELTS band descriptor guidelines.</p>
         </footer>
 
-      </div>
+        </div>{/* end content wrapper */}
+      </div>{/* end zIndex wrapper */}
 
       {/* Auth Modal dialogue */}
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />

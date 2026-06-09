@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { 
-  ArrowLeft, 
   Trash2, 
   Search, 
   Loader2, 
@@ -22,6 +20,7 @@ import FeedbackAccordion from '../components/FeedbackAccordion';
 import AuthModal from '../components/AuthModal';
 import ThreeBackground from '../components/ThreeBackground';
 import ProgressTracker from '../components/ProgressTracker';
+import Navbar from '../components/Navbar';
 
 export default function HistoryPage() {
   const { user, signOut } = useAuth();
@@ -242,58 +241,17 @@ export default function HistoryPage() {
   ];
 
   return (
-    <div className="min-h-screen relative flex flex-col font-sans select-none text-slate-100 pb-12 bg-[#1C1917]">
+    <div className="min-h-screen relative flex flex-col font-sans select-none text-slate-100 pb-12">
       {/* 3D background canvas */}
       <ThreeBackground />
 
-      <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-8 z-10">
-        
-        {/* Navigation Navbar */}
-        <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#1C1917]/75 border-b border-[#44403C]/50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 mb-10 shadow-lg transition-all duration-300">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#CA8A04]/10 border border-[#CA8A04]/30 rounded-xl shadow-lg shadow-yellow-600/10 text-[#CA8A04]">
-              <History className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-[#FAFAF9] via-[#FAFAF9] to-[#CA8A04] bg-clip-text text-transparent tracking-tight leading-tight m-0">
-                Evaluation History
-              </h1>
-              <p className="text-xs text-[#CA8A04]/80 font-medium tracking-wide">Archived IELTS band scores & reports</p>
-            </div>
-          </div>
+      {/* Dark overlay for readability */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(12,10,9,0.55)', zIndex: 1, pointerEvents: 'none' }} />
 
-          <div className="flex items-center gap-3">
-            {/* Write Essay Link */}
-            <Link
-              to="/"
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/5 hover:bg-[#CA8A04]/10 border border-[#44403C] rounded-xl text-xs font-bold text-slate-300 hover:text-[#CA8A04] transition-all duration-300 cursor-pointer"
-            >
-              <ArrowLeft className="h-3.5 w-3.5 text-[#CA8A04]" />
-              <span>Write Essay</span>
-            </Link>
+      <div style={{ position: 'relative', zIndex: 2 }} className="flex flex-col min-h-screen">
+        <Navbar onSignInClick={() => setIsAuthModalOpen(true)} />
 
-            {user ? (
-              <div className="flex items-center gap-2 bg-[#44403C]/20 border border-[#44403C]/50 rounded-xl p-1">
-                <div className="px-3 py-1.5 text-xs text-slate-300 font-medium">
-                  Hi, {user.email.split('@')[0]}
-                </div>
-                <button
-                  onClick={signOut}
-                  className="px-3 py-1.5 bg-[#44403C]/50 hover:bg-[#CA8A04]/20 border border-transparent hover:border-[#CA8A04]/30 rounded-lg text-xs font-semibold text-slate-300 hover:text-[#CA8A04] transition-all duration-300 cursor-pointer"
-                >
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="px-4.5 py-2.5 bg-[#CA8A04] hover:bg-[#CA8A04]/90 text-[#0C0A09] rounded-xl text-xs font-bold transition-all duration-300 shadow-md shadow-yellow-600/10 hover:shadow-[#CA8A04]/35 hover:-translate-y-0.5 cursor-pointer"
-              >
-                Sign In
-              </button>
-            )}
-          </div>
-        </header>
+        <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-8">
 
         {/* Auth Guard Validation */}
         {!user && !isLoading && (
@@ -527,7 +485,8 @@ export default function HistoryPage() {
           </main>
         )}
 
-      </div>
+        </div>{/* end max-w-6xl wrapper */}
+      </div>{/* end zIndex wrapper */}
 
       {/* Slide-in Detail Drawer Overlay */}
       {isDrawerOpen && activeSubmission && (
